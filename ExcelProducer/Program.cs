@@ -145,7 +145,7 @@ namespace Excel
                 cellStyle5.Alignment = HorizontalAlignment.Left;
                 cellStyle5.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle5.SetFont(font5);
-                ws.GetRow(3 + count * rows).CreateCell(5).SetCellValue("同學");
+                ws.GetRow(3 + count * rows).CreateCell(5).SetCellValue((text[2]==""?"":"同學"));
                 ws.GetRow(3 + count * rows).GetCell(5).CellStyle = cellStyle5;
 
                 ws.CreateRow(4 + count * rows);
