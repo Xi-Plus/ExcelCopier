@@ -41,7 +41,6 @@ namespace Excel
             string[] num = { "", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十" };
             foreach (string line in File.ReadLines("in.csv", Encoding.Default))
             {
-                Console.WriteLine(line);
                 string[] rawtext = line.Split(delimiterChars);
                 string[] text = new string[12];
                 for (int i = 1; i <= 11; i++)
@@ -65,10 +64,12 @@ namespace Excel
                         text[5] = rawtext[6] + "秒" + rawtext[7];
                         break;
                 }
-
-                foreach (string tmp in text)
-                    Console.Write(tmp + ',');
+                for (int i = 0; i <= 11;i++ ){
+                    if(i==6||i==7||i==8)continue;
+                    Console.Write(text[i] + ',');
+                }
                 Console.WriteLine("");
+                if (text[2].IndexOf("?") != -1) Console.WriteLine("*編碼錯誤 第" + (4 + count * rows) + "行");
 
                 ws.CreateRow(0 + count * rows);
                 ws.GetRow(0 + count * rows).HeightInPoints = 39.75F;
