@@ -8,6 +8,11 @@
 
 # Build results
 # [Dd]ebug/
+ExcelProducer.exe
+ExcelProducer.pdb
+ExcelProducer.vshost.exe
+ExcelProducer.vshost.exe.manifest
+out.xlsx
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
