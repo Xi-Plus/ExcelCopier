@@ -12,6 +12,7 @@ ExcelProducer.exe
 ExcelProducer.pdb
 ExcelProducer.vshost.exe
 ExcelProducer.vshost.exe.manifest
+in.csv
 out.xlsx
 [Dd]ebugPublic/
 [Rr]elease/
