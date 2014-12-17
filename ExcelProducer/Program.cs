@@ -35,41 +35,46 @@ namespace Excel
 
             int count = 0;
 
-            char[] delimiterChars = { ' ', ',', '\t' };
+            char[] delimiterChars = { ',', '\t' };
 
             const int rows = 15;
             string[] num = { "", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十" };
             foreach (string line in File.ReadLines("in.csv", Encoding.Default))
             {
                 string[] rawtext = line.Split(delimiterChars);
-                string[] text = new string[12];
-                for (int i = 1; i <= 11; i++)
+                string[] text = new string[14];
+                text[0] = rawtext[0];
+                for (int i = 1; i <= 13; i++)
                 {
                     text[i] = rawtext[i - 1];
                 }
-                int cla = int.Parse(rawtext[0]);
-                text[0] = num[cla / 100];
-                cla %= 100;
-                text[1] = num[cla / 10 * 10] + num[cla % 10];
-                text[4] = num[int.Parse(text[4])];
-                switch (rawtext[4])
+                if (rawtext[1] != "")
+                {
+                    int cla = int.Parse(rawtext[1]);
+                    text[1] = num[cla / 100];
+                    cla %= 100;
+                    text[2] = num[cla / 10 * 10] + num[cla % 10];
+                }
+                if (text[6] != "") text[6] = num[int.Parse(text[6])];
+                else text[6] = "";
+                switch (rawtext[6])
                 {
                     case "l":
-                        text[5] = rawtext[7] + "公尺";
+                        text[7] = rawtext[9] + (rawtext[9].Length < rawtext[9].IndexOf(".") + 3 ? "0" : "") + "公尺";
                         break;
                     case "m":
-                        text[5] = rawtext[5] + "分" + rawtext[6] + "秒" + rawtext[7];
+                        text[7] = rawtext[7] + "分" + (int.Parse(rawtext[8]) < 10 ? "0" : "") + rawtext[8] + "秒" + (int.Parse(rawtext[9]) < 10 ? "0" : "") + rawtext[9];
                         break;
                     case "s":
-                        text[5] = rawtext[6] + "秒" + rawtext[7];
+                        text[7] = rawtext[8] + "秒" + (int.Parse(rawtext[9]) < 10 ? "0" : "") + rawtext[9];
                         break;
                 }
-                for (int i = 0; i <= 11;i++ ){
-                    if(i==6||i==7||i==8)continue;
+                for (int i = 0; i <= 13;i++ ){
+                    if(i==8||i==9||i==10)continue;
                     Console.Write(text[i] + ',');
                 }
                 Console.WriteLine("");
-                if (text[2].IndexOf("?") != -1) Console.WriteLine("*編碼錯誤 第" + (4 + count * rows) + "行");
+                if (text[3].IndexOf("?") != -1) Console.WriteLine("*編碼錯誤 第" + (4 + count * rows) + "行");
 
                 ws.CreateRow(0 + count * rows);
                 ws.GetRow(0 + count * rows).HeightInPoints = 39.75F;
@@ -87,7 +92,7 @@ namespace Excel
                 cellStyle1.Alignment = HorizontalAlignment.Center;
                 cellStyle1.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle1.SetFont(font1);
-                ws.GetRow(1 + count * rows).CreateCell(3).SetCellValue("獎　    狀");
+                ws.GetRow(1 + count * rows).CreateCell(3).SetCellValue(text[0]);
                 ws.GetRow(1 + count * rows).GetCell(3).CellStyle = cellStyle1;
 
                 ws.CreateRow(2 + count * rows);
@@ -119,7 +124,7 @@ namespace Excel
                 cellStyle3.Alignment = HorizontalAlignment.Center;
                 cellStyle3.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle3.SetFont(font3);
-                ws.GetRow(3 + count * rows).CreateCell(3).SetCellValue(text[0] + "年" + text[1] + "班 ");
+                ws.GetRow(3 + count * rows).CreateCell(3).SetCellValue((rawtext[1] == "" ? "" : text[1] + "年" + text[2] + "班 "));
                 ws.GetRow(3 + count * rows).GetCell(3).CellStyle = cellStyle3;
 
                 ICellStyle cellStyle4 = null;
@@ -132,7 +137,7 @@ namespace Excel
                 cellStyle4.Alignment = HorizontalAlignment.Center;
                 cellStyle4.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle4.SetFont(font4);
-                ws.GetRow(3 + count * rows).CreateCell(4).SetCellValue(text[2]);
+                ws.GetRow(3 + count * rows).CreateCell(4).SetCellValue(text[3]);
                 ws.GetRow(3 + count * rows).GetCell(4).CellStyle = cellStyle4;
 
                 ICellStyle cellStyle5 = null;
@@ -145,7 +150,7 @@ namespace Excel
                 cellStyle5.Alignment = HorizontalAlignment.Left;
                 cellStyle5.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle5.SetFont(font5);
-                ws.GetRow(3 + count * rows).CreateCell(5).SetCellValue((text[2]==""?"":"同學"));
+                ws.GetRow(3 + count * rows).CreateCell(5).SetCellValue((text[3]==""?"":"同學"));
                 ws.GetRow(3 + count * rows).GetCell(5).CellStyle = cellStyle5;
 
                 ws.CreateRow(4 + count * rows);
@@ -158,10 +163,10 @@ namespace Excel
                 font6.FontHeightInPoints = 22;
                 font6.FontName = "標楷體";
                 //font.Boldweight = (short)NPOI.SS.UserModel.FontBoldWeight.Bold;
-                cellStyle6.Alignment = HorizontalAlignment.Center;
+                cellStyle6.Alignment = HorizontalAlignment.Left;//Center;
                 cellStyle6.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle6.SetFont(font6);
-                ws.GetRow(4 + count * rows).CreateCell(1).SetCellValue("參加103學年度全校運動會");
+                ws.GetRow(4 + count * rows).CreateCell(1).SetCellValue(text[4]);
                 ws.GetRow(4 + count * rows).GetCell(1).CellStyle = cellStyle6;
 
                 ICellStyle cellStyle7 = null;
@@ -171,10 +176,10 @@ namespace Excel
                 font7.FontHeightInPoints = 22;
                 font7.FontName = "標楷體";
                 font7.Boldweight = (short)NPOI.SS.UserModel.FontBoldWeight.Bold;
-                cellStyle7.Alignment = HorizontalAlignment.Center;
+                cellStyle7.Alignment = HorizontalAlignment.Left;//Center;
                 cellStyle7.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle7.SetFont(font7);
-                ws.GetRow(4 + count * rows).CreateCell(4).SetCellValue(text[3]);
+                ws.GetRow(4 + count * rows).CreateCell(4).SetCellValue(text[5]);
                 ws.GetRow(4 + count * rows).GetCell(4).CellStyle = cellStyle7;
 
                 ws.CreateRow(5 + count * rows);
@@ -203,7 +208,7 @@ namespace Excel
                 cellStyle9.Alignment = HorizontalAlignment.Left;
                 cellStyle9.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle9.SetFont(font9);
-                ws.GetRow(5 + count * rows).CreateCell(2).SetCellValue("第" + text[4] + "名");
+                ws.GetRow(5 + count * rows).CreateCell(2).SetCellValue((text[6]==""?"":"第" + text[6] + "名"));
                 ws.GetRow(5 + count * rows).GetCell(2).CellStyle = cellStyle9;
 
                 ICellStyle cellStyle10 = null;
@@ -229,7 +234,7 @@ namespace Excel
                 cellStyle11.Alignment = HorizontalAlignment.Left;
                 cellStyle11.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle11.SetFont(font11);
-                ws.GetRow(5 + count * rows).CreateCell(4).SetCellValue(text[5]);
+                ws.GetRow(5 + count * rows).CreateCell(4).SetCellValue(text[7]);
                 ws.GetRow(5 + count * rows).GetCell(4).CellStyle = cellStyle11;
 
                 ws.CreateRow(6 + count * rows);
@@ -286,7 +291,7 @@ namespace Excel
                 cellStyle14.Alignment = HorizontalAlignment.Left;
                 cellStyle14.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle14.SetFont(font14);
-                ws.GetRow(13 + count * rows).CreateCell(3).SetCellValue(text[9] + "年  " + text[10] + "月");
+                ws.GetRow(13 + count * rows).CreateCell(3).SetCellValue(text[11] + "年  " + text[12] + "月");
                 ws.GetRow(13 + count * rows).GetCell(3).CellStyle = cellStyle14;
 
                 ICellStyle cellStyle15 = null;
@@ -299,7 +304,7 @@ namespace Excel
                 cellStyle15.Alignment = HorizontalAlignment.Left;
                 cellStyle15.VerticalAlignment = NPOI.SS.UserModel.VerticalAlignment.Center;
                 cellStyle15.SetFont(font15);
-                ws.GetRow(13 + count * rows).CreateCell(4).SetCellValue(text[11] + "日");
+                ws.GetRow(13 + count * rows).CreateCell(4).SetCellValue(text[13] + "日");
                 ws.GetRow(13 + count * rows).GetCell(4).CellStyle = cellStyle15;
 
                 ws.CreateRow(14 + count * rows);
